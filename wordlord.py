@@ -1,10 +1,10 @@
 import fileinput
 
-trie = dict();
+trie = dict()
 end_char = '.'
 
 def load_dictionary(filename):
-    print('loading dictionary from ' + filename, end='...')
+    print('Loading words from ' + filename, end='...')
     f = open(filename, 'r')
     count = 0
     for word in f.readlines():
@@ -15,7 +15,7 @@ def load_dictionary(filename):
                 node[letter] = dict()
             node = node[letter]
         node[end_char] = dict()
-    print(' loaded ' + str(count) + ' words')
+    print(' Loaded ' + str(count) + ' words')
 
 
 def is_word(word):
@@ -37,7 +37,7 @@ def find_words(letters, node, words, current_word):
    
 def list_words(letters):
     words = list()
-    find_words(letters, trie, words, '');
+    find_words(letters, trie, words, '')
     return words
 
     
@@ -84,7 +84,11 @@ def print_words(letters):
 
 
 def main():
-    load_dictionary('dictionary.txt')
+    default_dictionary_file = 'dictionary.txt'
+    dictionary_file = input('Dictionary file (default ' + default_dictionary_file + '): ')
+    if len(dictionary_file) == 0:
+            dictionary_file = default_dictionary_file
+    load_dictionary(dictionary_file)
     for line in fileinput.input():
         print_words(line.strip())
 
