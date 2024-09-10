@@ -1,6 +1,9 @@
 import fileinput
+import math
+import sys
 
 trie = dict()
+
 end_char = '.'
 
 def load_dictionary(filename):
@@ -62,7 +65,17 @@ def print_pangrams(words, letters):
     print()
 
 
-def spelling_bee(letters):
+def obfuscate_word(word, visible_letters):
+    censored_word = ''
+    for c in word:
+        if c in visible_letters:
+            censored_word += c
+        else:
+            censored_word += '*'
+    return censored_word
+
+
+def spelling_bee(letters, hint_limit=math.inf, hint_letters=None):
     valid_letters = unique_letters(letters)
     if len(valid_letters) is not len(letters):
         print('warning: duplicate letters')
@@ -71,6 +84,10 @@ def spelling_bee(letters):
     words = list_words(valid_letters)
     words = sorted(list(filter(lambda word: len(word) >= 4 and letters[0] in word, words)))
     print(len(words))
+    if hint_limit < math.inf:
+        words = [word[:hint_limit] for word in words]
+    if hint_letters:
+        words = [obfuscate_word(word, hint_letters) for word in words]
     print(words)
     print_pangrams(words, valid_letters)
 
@@ -85,12 +102,27 @@ def print_words(letters):
 
 def main():
     default_dictionary_file = 'dictionary.txt'
-    dictionary_file = input('Dictionary file (default ' + default_dictionary_file + '): ')
-    if len(dictionary_file) == 0:
-            dictionary_file = default_dictionary_file
+    dictionary_file = sys.argv[1] if len(sys.argv) > 1 else default_dictionary_file
     load_dictionary(dictionary_file)
     for line in fileinput.input():
-        print_words(line.strip())
+        line = line.strip().split()
+        if not line:
+            continue
+        letters = line[0]
+        hint_limit = math.inf
+        hint_letters = None
+        if len(line) > 1:
+            if line[1].isdigit():
+                hint_limit = int(line[1])
+            else:
+                hint_letters = unique_letters(line[1])
+        if len(line) > 2:
+            if line[2].isdigit():
+                hint_limit = int(line[2])
+            else:
+                hint_letters = unique_letters(line[2])
+        spelling_bee(letters, hint_limit, hint_letters)
+
 
 if __name__ == '__main__':
     main()
