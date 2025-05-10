@@ -79,7 +79,7 @@ def spelling_bee(letters, hint_limit=math.inf, hint_letters=None):
     if len(valid_letters) is not len(letters):
         print('warning: duplicate letters')
     if len(valid_letters) != 7:
-        print('warning: number if letters is ' + str(len(valid_letters)) + ' not 7')
+        print('warning: number of letters is ' + str(len(valid_letters)) + ' not 7')
     words = list_words(valid_letters)
     words = sorted(list(filter(lambda word: len(word) >= 4 and letters[0] in word, words)))
     print(len(words))
