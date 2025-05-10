@@ -1,4 +1,3 @@
-import fileinput
 import math
 import sys
 
@@ -8,16 +7,16 @@ end_char = '.'
 
 def load_dictionary(filename):
     print('Loading words from ' + filename, end='...')
-    f = open(filename, 'r')
-    count = 0
-    for word in f.readlines():
-        count += 1
-        node = trie
-        for letter in word.strip():
-            if letter not in node:
-                node[letter] = dict()
-            node = node[letter]
-        node[end_char] = dict()
+    with open(filename, 'r') as f:
+        count = 0
+        for word in f.readlines():
+            count += 1
+            node = trie
+            for letter in word.strip():
+                if letter not in node:
+                    node[letter] = dict()
+                node = node[letter]
+            node[end_char] = dict()
     print(' Loaded ' + str(count) + ' words')
 
 
@@ -104,7 +103,7 @@ def main():
     default_dictionary_file = 'dictionary.txt'
     dictionary_file = sys.argv[1] if len(sys.argv) > 1 else default_dictionary_file
     load_dictionary(dictionary_file)
-    for line in fileinput.input():
+    for line in sys.stdin:
         line = line.strip().split()
         if not line:
             continue
